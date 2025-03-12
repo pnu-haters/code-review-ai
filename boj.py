@@ -1,7 +1,6 @@
-import re
-import json
-import base64
 import requests
+from bs4 import BeautifulSoup
+from textwrap import dedent
 
 def get_problem(boj_problem_id):
   url = f"https://www.acmicpc.net/problem/{boj_problem_id}"
@@ -12,14 +11,24 @@ def get_problem(boj_problem_id):
   response = requests.get(url, headers=headers)
   html = response.text
 
-  matched = re.search(r'<div id="problem-lang-base64">(.*?)</div>', html)
+  soup = BeautifulSoup(html, 'html.parser')
 
-  if not matched:
-    raise Exception(f"백준 {boj_problem_id} 문제를 정상적으로 가져올 수 없습니다.")
-  
-  decoded = base64.b64decode(matched.group(1))
-  boj_data = json.loads(decoded)
+  return {
+    "title": soup.select_one("#problem_title").getText(),
+    "info": soup.select_one("#problem-info").getText(),
+    "description": soup.select_one("#problem_description").getText(),
+    "input": soup.select_one("#problem_input").getText(),
+    "output": soup.select_one("#problem_output").getText(),
+    # "algorithm_types": soup.select_one("#problem_tags").getText(),
+    # 없는 경우가 있다.
+  }
 
-  print(boj_data[0])
 
-  return boj_data[0]
+def problem_to_text(data):
+  return dedent(f"""
+      제목: {data["title"]}
+      정보: {data["info"]}
+      설명: {data["description"]}
+      입력: {data["input"]}
+      출력: {data["output"]}
+    """)
