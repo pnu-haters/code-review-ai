@@ -36,6 +36,9 @@ def main():
       else:
         study_code[boj_id] = [(user, content_file.name, code)]
 
+  if not os.path.exists("reviews"):
+    os.makedirs("reviews")
+
   for boj_id, elem in study_code.items():
     boj_problem_text = boj.problem_to_markdown(boj.get_problem(boj_id))
 
@@ -55,7 +58,7 @@ def main():
 
 {reviewed_text}
 """
-    with open(f"{boj_id}_AI_코드리뷰.md", "w", encoding="utf-8") as file:
+    with open(f"reviews/{boj_id}_AI_코드리뷰.md", "w", encoding="utf-8") as file:
       file.write(markdown)
     
 if __name__ == "__main__":
