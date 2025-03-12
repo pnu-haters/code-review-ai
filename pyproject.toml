@@ -4,4 +4,7 @@ version = "0.0.1"
 description = "code review AI for 2025 study"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "openai>=1.66.2",
+    "pygithub>=2.6.1",
+]

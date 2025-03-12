@@ -1,6 +1,9 @@
+import sys
+
 def main():
-    print("Hello from code-review-ai!")
+    print(sys.argv[0])
 
 
 if __name__ == "__main__":
     main()
+
