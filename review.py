@@ -11,13 +11,7 @@ class ReviewAI:
     response = self.client.responses.create(
       model="gpt-4o",
       instructions=self.prompt,
-      input=f"""\
-다음은 내가 풀어야 하는 문제야.
-{boj_problem_text}
-
-다음은 내 코드야.
-{code}
-""",
+      input=f"다음은 내가 풀어야 하는 문제야.\n{boj_problem_text}\n\n다음은 내 코드야.\n{code}",
     )
 
     return response.output_text

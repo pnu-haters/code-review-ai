@@ -22,8 +22,8 @@ def main():
 
   study_code = {}
 
-  for user in config["code_review"]["users"]: # 문제들을 모두 problems에 저장하기
-    files = repo.get_contents(f"{user}/{week}") # 폴더 경로
+  for user in config["code_review"]["users"]:
+    files = repo.get_contents(f"{user}/{week}")
 
     for content_file in files:
       content = repo.get_contents(f"{user}/{week}/{content_file.name}")
@@ -42,22 +42,13 @@ def main():
   for boj_id, elem in study_code.items():
     boj_problem_text = boj.problem_to_markdown(boj.get_problem(boj_id))
 
-    markdown = f"""\
-# 문제
-{boj_problem_text}
-"""
-
+    markdown = f"# 문제\n{boj_problem_text}\n"
+    
     for user, filename, code in elem:
       reviewed_text = review_ai.review(boj_problem_text, code)
       
-      markdown += f"""
-## {user}
-```{os.path.splitext(filename)[1][1:]}
-{code}
-```
+      markdown += f"\n## {user}\n```{os.path.splitext(filename)[1][1:]}\n{code}```\n{reviewed_text}\n"
 
-{reviewed_text}
-"""
     with open(f"reviews/{boj_id}_AI_코드리뷰.md", "w", encoding="utf-8") as file:
       file.write(markdown)
     
