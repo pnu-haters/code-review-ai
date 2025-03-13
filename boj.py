@@ -1,14 +1,16 @@
-import requests
+import aiohttp
 from bs4 import BeautifulSoup
 
-def get_problem(boj_problem_id):
+async def get_problem(boj_problem_id):
   url = f"https://www.acmicpc.net/problem/{boj_problem_id}"
   headers = {
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
   }
 
-  response = requests.get(url, headers=headers)
-  html = response.text
+  async with aiohttp.ClientSession() as session:
+    async with session.get(url, headers=headers) as response:
+
+      html = await response.text()
 
   soup = BeautifulSoup(html, 'html.parser')
   cells = soup.select_one("#problem-info tbody tr").find_all("td")

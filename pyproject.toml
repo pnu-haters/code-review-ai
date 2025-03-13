@@ -5,8 +5,9 @@ description = "code review AI for 2025 study"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "aiohttp>=3.11.13",
     "beautifulsoup4>=4.13.3",
+    "githubkit>=0.12.8",
     "openai>=1.66.2",
-    "pygithub>=2.6.1",
     "requests>=2.32.3",
 ]
