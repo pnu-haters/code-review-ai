@@ -1,7 +1,12 @@
 import aiohttp
 from bs4 import BeautifulSoup
 
+cache = {}
+
 async def get_problem(boj_problem_id):
+  if boj_problem_id in cache:
+    return cache[boj_problem_id]
+
   url = f"https://www.acmicpc.net/problem/{boj_problem_id}"
   headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
@@ -15,7 +20,7 @@ async def get_problem(boj_problem_id):
   soup = BeautifulSoup(html, 'html.parser')
   cells = soup.select_one("#problem-info tbody tr").find_all("td")
 
-  return {
+  cache[boj_problem_id] = {
     "title": soup.select_one("#problem_title").getText(),
     "time_limit": cells[0].get_text(strip=True),
     "memory_limit": cells[1].get_text(strip=True),
@@ -25,6 +30,8 @@ async def get_problem(boj_problem_id):
     # "algorithm_types": soup.select_one("#problem_tags").getText(),
     # 없는 경우가 있다.
   }
+
+  return cache[boj_problem_id]
 
 
 def problem_to_markdown(data):
