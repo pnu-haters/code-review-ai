@@ -8,11 +8,13 @@ import githubkit
 from githubkit import GitHub
 from review import ReviewAI
 
+
 def load_config():
-  with open(".env.toml", 'rb') as f:
+  with open(".env.toml", "rb") as f:
     config = tomllib.load(f)
 
   return config
+
 
 async def get_code_and_review_it(github, review_ai, repo, path, boj_id):
   try:
@@ -28,11 +30,14 @@ async def get_code_and_review_it(github, review_ai, repo, path, boj_id):
   boj_problem_text = boj.problem_to_markdown(await boj.get_problem(boj_id))
 
   # async with semaphore:
-  reviewed_text = await review_ai.review_chat_completions_api(boj_problem_text, code, os.path.splitext(path)[1][1:])
+  reviewed_text = await review_ai.review_chat_completions_api(
+    boj_problem_text, code, os.path.splitext(path)[1][1:]
+  )
 
   print(f"✅ {path} 코드를 리뷰했습니다.")
 
   return reviewed_text
+
 
 async def fetch(config, user, selected_dir, github, review_ai):
   try:
@@ -48,24 +53,27 @@ async def fetch(config, user, selected_dir, github, review_ai):
 
   # semaphore = asyncio.Semaphore(2)
 
-  for file in files:    
-    task = asyncio.create_task(get_code_and_review_it(
-      github, 
-      review_ai, 
-      # semaphore,
-      config["code_review"]["github_repo"], 
-      file.path, 
-      file.name.split("_")[1],
-    ), name=file.name)
+  for file in files:
+    task = asyncio.create_task(
+      get_code_and_review_it(
+        github,
+        review_ai,
+        # semaphore,
+        config["code_review"]["github_repo"],
+        file.path,
+        file.name.split("_")[1],
+      ),
+      name=file.name,
+    )
 
     tasks.append(task)
-  
+
   await asyncio.gather(*tasks)
 
   return tasks
 
-async def main():
 
+async def main():
   config = load_config()
   selected_dir = sys.argv[1]
 
@@ -75,7 +83,9 @@ async def main():
   tasks = []
 
   for user in config["code_review"]["users"]:
-    task = asyncio.create_task(fetch(config, user, selected_dir, github, review_ai), name=user)
+    task = asyncio.create_task(
+      fetch(config, user, selected_dir, github, review_ai), name=user
+    )
 
     tasks.append(task)
 

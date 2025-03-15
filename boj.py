@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 
 cache = {}
 
+
 async def get_problem(boj_problem_id):
   if boj_problem_id in cache:
     return cache[boj_problem_id]
@@ -14,10 +15,9 @@ async def get_problem(boj_problem_id):
 
   async with aiohttp.ClientSession() as session:
     async with session.get(url, headers=headers) as response:
-
       html = await response.text()
 
-  soup = BeautifulSoup(html, 'html.parser')
+  soup = BeautifulSoup(html, "html.parser")
   cells = soup.select_one("#problem-info tbody tr").find_all("td")
 
   cache[boj_problem_id] = {

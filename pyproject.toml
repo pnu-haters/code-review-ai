@@ -11,3 +11,10 @@ dependencies = [
     "openai>=1.66.2",
     "requests>=2.32.3",
 ]
+
+[tool.ruff]
+indent-width = 2
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
