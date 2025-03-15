@@ -28,7 +28,7 @@ async def get_code_and_review_it(github, review_ai, repo, path, boj_id):
   boj_problem_text = boj.problem_to_markdown(await boj.get_problem(boj_id))
 
   # async with semaphore:
-  reviewed_text = await review_ai.review(boj_problem_text, code, os.path.splitext(path)[1][1:])
+  reviewed_text = await review_ai.review_chat_completions_api(boj_problem_text, code, os.path.splitext(path)[1][1:])
 
   print(f"✅ {path} 코드를 리뷰했습니다.")
 
